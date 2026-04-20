@@ -32,6 +32,8 @@ type BackwardsInvocation interface {
 	InvokeModeration(payload *InvokeModerationRequest) (*model_entities.ModerationResult, error)
 	// InvokeTool
 	InvokeTool(payload *InvokeToolRequest) (*stream.Stream[tool_entities.ToolResponseChunk], error)
+	// SubmitToolInterruptResult posts async tool result for a paused workflow (plugin interrupt / resume).
+	SubmitToolInterruptResult(payload *InvokeSubmitToolInterruptResultRequest) (*SubmitToolInterruptResultData, error)
 	// InvokeApp
 	InvokeApp(payload *InvokeAppRequest) (*stream.Stream[map[string]any], error)
 	// InvokeParameterExtractor

@@ -35,6 +35,7 @@ const (
 	INVOKE_TYPE_SYSTEM_SUMMARY           InvokeType = "system_summary"
 	INVOKE_TYPE_UPLOAD_FILE              InvokeType = "upload_file"
 	INVOKE_TYPE_FETCH_APP                InvokeType = "fetch_app"
+	INVOKE_TYPE_SUBMIT_TOOL_INTERRUPT_RESULT InvokeType = "submit_tool_interrupt_result"
 )
 
 type InvokeLLMSchema struct {
@@ -248,6 +249,16 @@ type InvokeToolRequest struct {
 	CredentialId   string            `json:"credential_id" validate:"omitempty"`
 	CredentialType string            `json:"credential_type,omitempty" validate:"omitempty"`
 	requests.InvokeToolSchema
+}
+
+type InvokeSubmitToolInterruptResultRequest struct {
+	BaseInvokeDifyRequest
+	Token  string         `json:"token" validate:"required"`
+	Result map[string]any `json:"result"`
+}
+
+type SubmitToolInterruptResultData struct {
+	Accepted bool `json:"accepted" validate:"required"`
 }
 
 type InvokeNodeResponse struct {

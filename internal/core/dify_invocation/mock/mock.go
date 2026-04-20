@@ -467,3 +467,9 @@ func (m *MockedDifyInvocation) FetchApp(payload *dify_invocation.FetchAppRequest
 		"name": "test",
 	}, nil
 }
+
+func (m *MockedDifyInvocation) SubmitToolInterruptResult(
+	payload *dify_invocation.InvokeSubmitToolInterruptResultRequest,
+) (*dify_invocation.SubmitToolInterruptResultData, error) {
+	return &dify_invocation.SubmitToolInterruptResultData{Accepted: true}, nil
+}

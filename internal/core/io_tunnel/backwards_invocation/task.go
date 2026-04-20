@@ -76,6 +76,12 @@ var (
 			},
 			"error": "permission denied, you need to enable tool access in plugin manifest",
 		},
+		dify_invocation.INVOKE_TYPE_SUBMIT_TOOL_INTERRUPT_RESULT: {
+			"func": func(declaration *plugin_entities.PluginDeclaration) bool {
+				return declaration.Resource.Permission.AllowInvokeTool()
+			},
+			"error": "permission denied, you need to enable tool access in plugin manifest",
+		},
 		dify_invocation.INVOKE_TYPE_LLM: {
 			"func": func(declaration *plugin_entities.PluginDeclaration) bool {
 				return declaration.Resource.Permission.AllowInvokeLLM()
@@ -279,6 +285,9 @@ var (
 		dify_invocation.INVOKE_TYPE_LLM_STRUCTURED_OUTPUT: func(handle *BackwardsInvocation) {
 			genericDispatchTask(handle, executeDifyInvocationLLMStructuredOutputTask)
 		},
+		dify_invocation.INVOKE_TYPE_SUBMIT_TOOL_INTERRUPT_RESULT: func(handle *BackwardsInvocation) {
+			genericDispatchTask(handle, executeDifyInvocationSubmitToolInterruptResultTask)
+		},
 	}
 )
 
@@ -322,6 +331,19 @@ func dispatchDifyInvocationTask(handle *BackwardsInvocation) {
 	}
 
 	handle.WriteError(fmt.Errorf("unsupported invoke type: %s", handle.Type()))
+}
+
+func executeDifyInvocationSubmitToolInterruptResultTask(
+	handle *BackwardsInvocation,
+	request *dify_invocation.InvokeSubmitToolInterruptResultRequest,
+) {
+	response, err := handle.backwardsInvocation.SubmitToolInterruptResult(request)
+	if err != nil {
+		handle.WriteError(fmt.Errorf("submit tool interrupt result failed: %s", err.Error()))
+		return
+	}
+
+	handle.WriteResponse("struct", response)
 }
 
 func executeDifyInvocationToolTask(

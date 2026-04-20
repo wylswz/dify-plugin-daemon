@@ -158,6 +158,14 @@ func (i *RealBackwardsInvocation) InvokeTool(payload *dify_invocation.InvokeTool
 	return StreamResponse[tool_entities.ToolResponseChunk](i, "POST", "invoke/tool", http_requests.HttpPayloadJson(payload))
 }
 
+func (i *RealBackwardsInvocation) SubmitToolInterruptResult(
+	payload *dify_invocation.InvokeSubmitToolInterruptResultRequest,
+) (*dify_invocation.SubmitToolInterruptResultData, error) {
+	return Request[dify_invocation.SubmitToolInterruptResultData](
+		i, "POST", "tool/interrupt/result", http_requests.HttpPayloadJson(payload),
+	)
+}
+
 func (i *RealBackwardsInvocation) InvokeApp(payload *dify_invocation.InvokeAppRequest) (*stream.Stream[map[string]any], error) {
 	return StreamResponse[map[string]any](i, "POST", "invoke/app", http_requests.HttpPayloadJson(payload))
 }

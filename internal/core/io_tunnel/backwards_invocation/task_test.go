@@ -109,6 +109,13 @@ func TestBackwardsInvocationAllPermittedPermission(t *testing.T) {
 	if err := checkPermission(&allPermittedRuntime, invokeAppRequest); err != nil {
 		t.Errorf("checkPermission failed: %s", err.Error())
 	}
+
+	invokeSubmitToolInterruptRequest := NewBackwardsInvocation(
+		dify_invocation.INVOKE_TYPE_SUBMIT_TOOL_INTERRUPT_RESULT, "", getTestSession(), nil, nil,
+	)
+	if err := checkPermission(&allPermittedRuntime, invokeSubmitToolInterruptRequest); err != nil {
+		t.Errorf("checkPermission failed: %s", err.Error())
+	}
 }
 
 func TestBackwardsInvocationAllDeniedPermission(t *testing.T) {
@@ -165,6 +172,13 @@ func TestBackwardsInvocationAllDeniedPermission(t *testing.T) {
 
 	invokeAppRequest := NewBackwardsInvocation(dify_invocation.INVOKE_TYPE_APP, "", getTestSession(), nil, nil)
 	if err := checkPermission(&allDeniedRuntime, invokeAppRequest); err == nil {
+		t.Errorf("checkPermission failed: expected error, got nil")
+	}
+
+	invokeSubmitToolInterruptRequest := NewBackwardsInvocation(
+		dify_invocation.INVOKE_TYPE_SUBMIT_TOOL_INTERRUPT_RESULT, "", getTestSession(), nil, nil,
+	)
+	if err := checkPermission(&allDeniedRuntime, invokeSubmitToolInterruptRequest); err == nil {
 		t.Errorf("checkPermission failed: expected error, got nil")
 	}
 }
