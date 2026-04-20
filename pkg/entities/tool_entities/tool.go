@@ -21,6 +21,7 @@ const (
 	ToolResponseChunkTypeVariable           ToolResponseChunkType = "variable"
 	ToolResponseChunkTypeLog                ToolResponseChunkType = "log"
 	ToolResponseChunkTypeRetrieverResources ToolResponseChunkType = "retriever_resources"
+	ToolResponseChunkTypeInterrupt          ToolResponseChunkType = "interrupt"
 )
 
 func IsValidToolResponseChunkType(fl validator.FieldLevel) bool {
@@ -37,7 +38,8 @@ func IsValidToolResponseChunkType(fl validator.FieldLevel) bool {
 		ToolResponseChunkTypeBinaryLink,
 		ToolResponseChunkTypeVariable,
 		ToolResponseChunkTypeLog,
-		ToolResponseChunkTypeRetrieverResources:
+		ToolResponseChunkTypeRetrieverResources,
+		ToolResponseChunkTypeInterrupt:
 		return true
 	default:
 		return false
