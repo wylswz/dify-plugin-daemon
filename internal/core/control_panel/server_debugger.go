@@ -3,6 +3,7 @@ package controlpanel
 import (
 	"github.com/langgenius/dify-plugin-daemon/internal/core/debugging_runtime"
 	"github.com/langgenius/dify-plugin-daemon/internal/types/app"
+	"github.com/langgenius/dify-plugin-daemon/pkg/entities/plugin_entities"
 	"github.com/langgenius/dify-plugin-daemon/pkg/utils/log"
 )
 
@@ -32,6 +33,7 @@ func (c *ControlPanel) onDebuggingRuntimeConnected(
 
 	// store plugin runtime
 	c.debuggingPluginRuntime.Store(pluginIdentifier, rpr)
+	c.debuggingRprToIdentity.Store(rpr, pluginIdentifier)
 
 	if c.cluster != nil {
 		if err = c.cluster.RegisterPlugin(rpr); err != nil {
@@ -50,16 +52,26 @@ func (c *ControlPanel) onDebuggingRuntimeConnected(
 func (c *ControlPanel) onDebuggingRuntimeDisconnected(
 	rpr *debugging_runtime.RemotePluginRuntime,
 ) {
-	// handle plugin disconnecting
-	pluginIdentifier, err := rpr.Identity()
-	if err != nil {
-		log.Error("failed to get plugin identity, check if your declaration is invalid", "error", err)
-		return
+	// Prefer identity from connect: OnClose runs plugin.cleanupResources() before this, so
+	// re-computing Identity() can yield an invalid id (e.g. empty checksum) and ":@" parse errors.
+	var pluginIdentifier plugin_entities.PluginUniqueIdentifier
+	if v, ok := c.debuggingRprToIdentity.LoadAndDelete(rpr); ok {
+		pluginIdentifier = v.(plugin_entities.PluginUniqueIdentifier)
+	} else {
+		var err error
+		pluginIdentifier, err = rpr.Identity()
+		if err != nil {
+			log.Warn(
+				"debugging plugin disconnected before identity was cached (e.g. closed during handshake); skipping unregister",
+				"error", err,
+			)
+			return
+		}
 	}
 
 	if c.cluster != nil {
-		if err = c.cluster.UnregisterPlugin(rpr); err != nil {
-			log.Error("failed to unregister remote debugging plugin from cluster", "error", err)
+		if uerr := c.cluster.UnregisterPlugin(rpr); uerr != nil {
+			log.Error("failed to unregister remote debugging plugin from cluster", "error", uerr)
 		}
 	}
 

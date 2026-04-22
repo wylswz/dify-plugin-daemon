@@ -226,6 +226,11 @@ func (app *App) pprofGroup(group *gin.RouterGroup, config *app.Config) {
 
 func (app *App) invokeGroup(group *gin.RouterGroup, config *app.Config) {
 	group.Use(CheckingKey(config.ServerKey))
+	// Out-of-session interrupt submit: only SERVER_KEY (X-Api-Key) + {token, result}; no plugin identifier.
+	group.POST(
+		"/backwards-invocation/submit-tool-interrupt-result",
+		controllers.SubmitToolInterruptResultOutOfSession,
+	)
 	dispatchGroup := group.Group("/dispatch")
 	dispatchGroup.Use(controllers.CollectActiveDispatchRequests())
 	dispatchGroup.Use(app.FetchPluginDirect())

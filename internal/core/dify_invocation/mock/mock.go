@@ -473,3 +473,12 @@ func (m *MockedDifyInvocation) SubmitToolInterruptResult(
 ) (*dify_invocation.SubmitToolInterruptResultData, error) {
 	return &dify_invocation.SubmitToolInterruptResultData{Accepted: true}, nil
 }
+
+func (m *MockedDifyInvocation) SubmitToolInterruptResultByTokenOnly(
+	token string,
+	result map[string]any,
+) (*dify_invocation.SubmitToolInterruptResultData, error) {
+	_ = token
+	_ = result
+	return &dify_invocation.SubmitToolInterruptResultData{Accepted: true}, nil
+}

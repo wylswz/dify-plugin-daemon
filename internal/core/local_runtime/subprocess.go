@@ -42,6 +42,9 @@ func (r *LocalPluginRuntime) getInstanceCmd() (*exec.Cmd, error) {
 		cmd.Env = append(cmd.Env, fmt.Sprintf("NO_PROXY=%s", r.appConfig.NoProxy))
 	}
 	cmd.Env = append(cmd.Env, "INSTALL_METHOD=local", "PATH="+os.Getenv("PATH"))
+	if r.appConfig.ServerKey != "" {
+		cmd.Env = append(cmd.Env, "DIFY_PLUGIN_SERVER_KEY="+r.appConfig.ServerKey)
+	}
 	cmd.Dir = r.State.WorkingPath
 	return cmd, nil
 }

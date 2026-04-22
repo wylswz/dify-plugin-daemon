@@ -34,6 +34,8 @@ type BackwardsInvocation interface {
 	InvokeTool(payload *InvokeToolRequest) (*stream.Stream[tool_entities.ToolResponseChunk], error)
 	// SubmitToolInterruptResult posts async tool result for a paused workflow (plugin interrupt / resume).
 	SubmitToolInterruptResult(payload *InvokeSubmitToolInterruptResultRequest) (*SubmitToolInterruptResultData, error)
+	// SubmitToolInterruptResultByTokenOnly posts only token+result; Dify resolves tenant from the interrupt token.
+	SubmitToolInterruptResultByTokenOnly(token string, result map[string]any) (*SubmitToolInterruptResultData, error)
 	// InvokeApp
 	InvokeApp(payload *InvokeAppRequest) (*stream.Stream[map[string]any], error)
 	// InvokeParameterExtractor

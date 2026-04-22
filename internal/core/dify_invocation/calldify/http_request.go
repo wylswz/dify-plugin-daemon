@@ -166,6 +166,20 @@ func (i *RealBackwardsInvocation) SubmitToolInterruptResult(
 	)
 }
 
+// SubmitToolInterruptResultByTokenOnly sends minimal JSON; Dify resolves tenant from the token (inner API key only).
+func (i *RealBackwardsInvocation) SubmitToolInterruptResultByTokenOnly(
+	token string,
+	result map[string]any,
+) (*dify_invocation.SubmitToolInterruptResultData, error) {
+	body := struct {
+		Token  string         `json:"token"`
+		Result map[string]any `json:"result"`
+	}{Token: token, Result: result}
+	return Request[dify_invocation.SubmitToolInterruptResultData](
+		i, "POST", "tool/interrupt/result", http_requests.HttpPayloadJson(body),
+	)
+}
+
 func (i *RealBackwardsInvocation) InvokeApp(payload *dify_invocation.InvokeAppRequest) (*stream.Stream[map[string]any], error) {
 	return StreamResponse[map[string]any](i, "POST", "invoke/app", http_requests.HttpPayloadJson(payload))
 }

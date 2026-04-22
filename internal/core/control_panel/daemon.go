@@ -73,6 +73,10 @@ type ControlPanel struct {
 		plugin_entities.PluginUniqueIdentifier,
 		*debugging_runtime.RemotePluginRuntime,
 	]
+
+	// debuggingRprToIdentity: remote *RemotePluginRuntime -> identity from successful connect.
+	// On TCP close, cleanup runs before disconnect notify; Identity() can fail on torn-down state — use the key from connect.
+	debuggingRprToIdentity sync.Map
 }
 
 type LocalPluginFailsRecord struct {
