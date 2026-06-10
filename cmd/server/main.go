@@ -89,7 +89,8 @@ func applyPipMirrorAutoDetect(config *app.Config) {
 }
 
 func detectAndApplyPipMirror(config *app.Config, client *http.Client, candidates []string, officialURL string, timeout time.Duration) string {
-	if !config.PipMirrorAutoDetect || config.PipMirrorUrl != "" {
+	if !config.PipMirrorAutoDetect || config.PipMirrorUrl != "" || config.Platform != app.PLATFORM_LOCAL {
+		// detection only applies to local runtime
 		return ""
 	}
 
